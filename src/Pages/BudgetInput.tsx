@@ -8,10 +8,15 @@ import {
   useAllBudgets,
 } from "../Functions/TanStack/BudgetQueries";
 import { useCurrentCustomer } from "../Functions/TanStack/CustomerQueries";
+import { Error } from "./Error";
 
 export const BudgetInput = () => {
   const { isLoading } = useAllBudgets();
-  const { data: customer, isLoading: isCustomerLoading } = useCurrentCustomer();
+  const {
+    data: customer,
+    isLoading: isCustomerLoading,
+    isError,
+  } = useCurrentCustomer();
   const addBudgetMutation = useAddBudgetMutation();
   const nameControl = useGTextInput("", (s: string) =>
     s === "" ? "Field is required" : ""
@@ -32,6 +37,10 @@ export const BudgetInput = () => {
         <Spinner />
       </Cardify>
     );
+  }
+
+  if (isError) {
+    return <Error />;
   }
 
   return (

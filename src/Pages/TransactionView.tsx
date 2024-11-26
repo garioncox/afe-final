@@ -8,16 +8,24 @@ import { useAllBudgetForCurrentCustomer } from "../Functions/TanStack/BudgetQuer
 import { useAllBudgetTransactionsForCurrentCustomer } from "../Functions/TanStack/BudgetTransactionQueries";
 import { BudgetTransactionEvent } from "../Data/BudgetTransactionEvent";
 import { Budget } from "../Data/Budget";
+import { Error } from "./Error";
 
 export const TransactionView = () => {
-  const { data: transactionEvents, isLoading: isTransactionsLoading } =
-    useAllTransactionEventsForCurrentCustomer();
+  const {
+    data: transactionEvents,
+    isLoading: isTransactionsLoading,
+    isError: isTransactionError,
+  } = useAllTransactionEventsForCurrentCustomer();
   const {
     data: budgetTransactionEvents,
     isLoading: isBudgetTransactionsLoading,
+    isError: isBudgetTransactionError,
   } = useAllBudgetTransactionsForCurrentCustomer();
-  const { data: budgets, isLoading: isBudgetsLoading } =
-    useAllBudgetForCurrentCustomer();
+  const {
+    data: budgets,
+    isLoading: isBudgetsLoading,
+    isError: isBudgetError,
+  } = useAllBudgetForCurrentCustomer();
   const dateUtils = useDateUtils();
 
   if (
@@ -26,6 +34,10 @@ export const TransactionView = () => {
     isBudgetTransactionsLoading
   ) {
     return <Spinner />;
+  }
+
+  if (isTransactionError || isBudgetTransactionError || isBudgetError) {
+    return <Error />;
   }
 
   if (!transactionEvents || transactionEvents.length == 0) {
